@@ -74,7 +74,9 @@ class FileStorage:
         if not cls:
             return len(self.__objects)
         count = 0
-        for _, obj in self.__objects.items():
+        if cls not in list(classes.values()):
+            return count
+        for obj in self.__objects.values():
             if obj.__class__.__name__ == cls.__class__.__name__:
                 count += 1
         return count

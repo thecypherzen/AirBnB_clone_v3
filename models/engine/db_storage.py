@@ -98,6 +98,8 @@ class DBStorage:
               in storage
         """
         if cls:
+            if cls not in list(classes.values()):
+                return 0
             return len(self.__session.query(cls).all())
         count = 0
         for _, clss in classes.items():
