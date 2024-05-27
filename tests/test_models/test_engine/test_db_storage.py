@@ -17,7 +17,7 @@ from models.user import User
 import json
 import os
 import pep8
-from sqlalchemu_utils import create_database database_exists
+from sqlalchemy_utils import create_database, database_exists
 import unittest
 DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
@@ -56,9 +56,9 @@ test_db_storage.py'])
 
     def test_db_storage_class_docstring(self):
         """Test for the DBStorage class docstring"""
-        self.assertIsNot(DBStorage.__doc__, None,
+        self.assertIsNot(db_storage.DBStorage.__doc__, None,
                          "DBStorage class needs a docstring")
-        self.assertTrue(len(DBStorage.__doc__) >= 1,
+        self.assertTrue(len(db_storage.DBStorage.__doc__) >= 1,
                         "DBStorage class needs a docstring")
 
     def test_dbs_func_docstrings(self):
@@ -79,10 +79,11 @@ class DBStorage(unittest.TestCase):
         HBNB_MYSQL_HOST = db_storage.getenv('HBNB_MYSQL_HOST')
         HBNB_MYSQL_DB = db_storage.getenv('HBNB_MYSQL_DB')
         HBNB_ENV = "test"
-        engine = "mysql+mysqldb://{}:{}@{}/{}".format(
+        uri = "mysql+mysqldb://{}:{}@{}/{}".format(
             HBNB_MYSQL_USER, HBNB_MYSQL_PWD, HBNB_MYSQL_HOST,
             HBNB_MYSQL_DB
         )
+        engine = db_storage.create_engine(uri)
         if not database_exists(engine.url):
             create_database(engine.url)
         Session = db_storage.sessionmaker(bind=engine)
@@ -107,7 +108,6 @@ class DBStorage(unittest.TestCase):
 
     def test_get(self):
         """Testing that get method works"""
-        
         pass
 
     # @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
