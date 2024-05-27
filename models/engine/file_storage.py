@@ -67,19 +67,11 @@ class FileStorage:
         Returns: the object based on the class and its ID, or None if not found
         """
         key = cls.__class__.__name__ + "." + id
-        return self.__objects.get(key, None)
+        return self.all().get(key, None)
 
     def count(self, cls=None):
         """A method to count the number of objects in storage"""
-        if not cls:
-            return len(self.__objects)
-        count = 0
-        if cls not in list(classes.values()):
-            return count
-        for obj in self.__objects.values():
-            if obj.__class__.__name__ == cls.__class__.__name__:
-                count += 1
-        return count
+        return len(self.all(cls))
 
     def delete(self, obj=None):
         """delete obj from __objects if it’s inside"""
