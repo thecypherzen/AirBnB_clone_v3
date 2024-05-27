@@ -17,6 +17,7 @@ from models.user import User
 import json
 import os
 import pep8
+from sqlalchemu_utils import create_database database_exists
 import unittest
 DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
@@ -28,7 +29,8 @@ class TestDBStorageDocs(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up for the doc tests"""
-        cls.dbs_f = inspect.getmembers(DBStorage, inspect.isfunction)
+        cls.dbs_f = inspect.getmembers(db_storage.DBStorage,
+                                       inspect.isfunction)
 
     def test_pep8_conformance_db_storage(self):
         """Test that models/engine/db_storage.py conforms to PEP8."""
@@ -68,21 +70,53 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestFileStorage(unittest.TestCase):
+class DBStorage(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """ Setup session for db unittests """
+        HBNB_MYSQL_USER = db_storage.getenv('HBNB_MYSQL_USER')
+        HBNB_MYSQL_PWD = db_storage.getenv('HBNB_MYSQL_PWD')
+        HBNB_MYSQL_HOST = db_storage.getenv('HBNB_MYSQL_HOST')
+        HBNB_MYSQL_DB = db_storage.getenv('HBNB_MYSQL_DB')
+        HBNB_ENV = "test"
+        engine = "mysql+mysqldb://{}:{}@{}/{}".format(
+            HBNB_MYSQL_USER, HBNB_MYSQL_PWD, HBNB_MYSQL_HOST,
+            HBNB_MYSQL_DB
+        )
+        if not database_exists(engine.url):
+            create_database(engine.url)
+        Session = db_storage.sessionmaker(bind=engine)
+        cls.session = db_storage.scoped_session(Session)
+
     """Test the FileStorage class"""
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_returns_dict(self):
         """Test that all returns a dictionaty"""
         self.assertIs(type(models.storage.all()), dict)
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_no_class(self):
         """Test that all returns all rows when no class is passed"""
+        pass
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_new(self):
         """test that new adds an object to the database"""
+        pass
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
-        """Test that save properly saves objects to file.json"""
+        """Test that save properly saves objects to database"""
+        pass
+
+    def test_get(self):
+        """Testing that get method works"""
+        
+        pass
+
+    # @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_count(self):
+        """Test that count method works"""
+
+    def test_reload(self):
+        """Test that function reloads data from database correctly"""
+        pass
+
+    def test_delete(self):
+        """Test that delete removes object from db/session"""
