@@ -2,7 +2,7 @@
 """Creates and manages our app"""
 
 from api.v1.views import app_views
-from flask import Flask, g, jsonify
+from flask import Flask, g, json
 from models import storage
 from os import getenv
 
@@ -19,7 +19,13 @@ def teardown_storage(exception):
 @app.errorhandler(404)
 def not_found(e):
     """Handles 404 errors in app to return JSON"""
-    return jsonify({"error": "Not found"}), 404
+    return json.dumps({"error": "Not found"}, indent=2) + '\n', 404
+
+@app.errorhandler(400)
+def wrong_data(e):
+    """Handles all wrong data related errors"""
+    res = {"error": e.description}
+    return json.dumps(res, indent=2) + '\n', 400
 
 
 if __name__ == "__main__":
