@@ -4,7 +4,7 @@
 """
 
 from api.v1.views import app_views
-from flask import abort, json, request
+from flask import abort, json, request, Response
 import models
 from models import storage
 
@@ -22,7 +22,8 @@ def get_all_users():
     if len(users):
         for user in users:
             users_list.append(user.to_dict())
-    return json.dumps(users_list, indent=2) + '\n'
+    res = json.dumps(users_list, indent=2) + '\n'
+    return Response(res, mimetype="application/json")
 
 
 @app_views.route('/users/<id>', strict_slashes=False)
@@ -34,7 +35,8 @@ def get_user(id):
     user = storage.get(User, id)
     if not user:
         abort(404)
-    return json.dumps(user.to_dict(), indent=2) + '\n'
+    res = json.dumps(user.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json")
 
 
 @app_views.route('/users/<id>', methods=['DELETE'], strict_slashes=False)
@@ -50,7 +52,8 @@ def delete_user(id):
         user.delete()
         storage.save()
         storage.reload()
-        return json.dumps({}) + '\n', 200
+        res = json.dumps({}) + '\n'
+        return Response(res, mimetype="application/json")
     abort(404)
 
 
@@ -70,9 +73,11 @@ def create_user():
     """
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            abort(400, description="Not a JSON")
     except Exception:
         abort(400, description="Not a JSON")
-    if not data:
+    if not data or not len(data):
         abort(404)
 
     if not data.get("email"):
@@ -87,7 +92,8 @@ def create_user():
         last_name=data.get('last+name')
     )
     new_user.save()
-    return json.dumps(new_user.to_dict(), indent=2) + '\n', 201
+    res = json.dumps(new_user.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json", status=201)
 
 
 @app_views.route('/users/<string:id>', methods=['PUT'],
@@ -118,4 +124,5 @@ def update_user(id):
     if data.get('password'):
         setattr(user, 'password', data['password'])
     user.save()
-    return json.dumps(user.to_dict(), indent=2) + '\n', 200
+    res = json.dumps(user.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json")
