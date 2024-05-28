@@ -2,7 +2,7 @@
 """ Defines interface for index"""
 
 from api.v1.views import app_views
-from flask import json
+from flask import json, Response
 import models
 from models import storage
 
@@ -10,7 +10,8 @@ from models import storage
 @app_views.route('/status', strict_slashes=False)
 def get_status():
     """checks status of server"""
-    return json.dumps({"status": "OK"}, indent=2) + '\n'
+    res = json.dumps({"status": "OK"}, indent=2) + '\n'
+    return Response(res, mimetype="application/json")
 
 
 @app_views.route('/stats', strict_slashes=False)
@@ -24,4 +25,5 @@ def get_models_stats():
           'states': storage.count(models.state.State),
           'users': storage.count(models.user.User)
           }
-    return json.dumps(res, indent=2) + '\n'
+    res = json.dumps(res, indent=2) + '\n'
+    return Response(res, mimetype="application/json")

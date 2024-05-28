@@ -3,9 +3,9 @@
 """
 from models import storage
 from models.user import User
+from models.amenity import Amenity
 
-
-
+''' Users
 storage.new(User(first_name="John", last_name="Kaase",
                  email="john.k@testdb.com",
                  password="johnk123"))
@@ -28,5 +28,14 @@ storage.new(User(first_name="Dora", last_name="Ekaji",
 
 storage.new(User(email="john.k@testdb.com",
                  password="johnk123"))
+'''
+
+'''Amenities
+'''
+storage.new(Amenity(name="Television"))
+storage.new(Amenity(name="WIFI"))
+storage.new(Amenity(name="Car Hire"))
+storage.new(Amenity(name="Swimming pool"))
+
 storage.save()
 storage.close()

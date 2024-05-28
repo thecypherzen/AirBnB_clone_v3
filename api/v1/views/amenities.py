@@ -2,7 +2,7 @@
 """A view for Amenities objects that handles all default RESTFul API actions"""
 
 from api.v1.views import app_views
-from flask import abort, json, request
+from flask import abort, json, request, Response
 import models
 from models import storage
 
@@ -20,7 +20,8 @@ def get_all_amenities():
     if len(amenities):
         for amenity in amenities:
             amenities_list.append(amenity.to_dict())
-    return json.dumps(amenities_list, indent=2) + '\n'
+    res = json.dumps(amenities_list, indent=2) + '\n'
+    return Response(res, mimetype="application/json")
 
 
 @app_views.route('/amenities/<string:id>', strict_slashes=False)
@@ -33,7 +34,8 @@ def get_single_amenity(id):
     amenity = storage.get(Amenity, id)
     if not amenity:
         abort(404)
-    return json.dumps(amenity.to_dict(), indent=2) + '\n'
+    res = json.dumps(amenity.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json")
 
 
 @app_views.route('/amenities/<string:id>', methods=['DELETE'],
@@ -50,7 +52,8 @@ def delete_amenity(id):
         amenity.delete()
         storage.save()
         storage.reload()
-        return json.dumps({}) + '\n', 200
+        res = json.dumps({}) + '\n'
+        return Response(res, mimetype="application/json")
     abort(404)
 
 
@@ -68,6 +71,8 @@ def create_amenity():
     """
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            abort(400, description="Not a JSON")
     except Exception:
         abort(400, description="Not a JSON")
     if not data:
@@ -78,7 +83,8 @@ def create_amenity():
 
     new_amenity = Amenity(name=data.get('name'))
     new_amenity.save()
-    return json.dumps(new_amenity.to_dict(), indent=2) + '\n', 201
+    res = json.dumps(new_amenity.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json", status=201)
 
 
 @app_views.route('/amenities/<string:id>', methods=['PUT'],
@@ -97,6 +103,8 @@ def update_amenity(id):
     """
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            abort(400, description="Not a JSON")
     except Exception:
         abort(400, description="Not a JSON")
     amenity = storage.get(Amenity, id)
@@ -105,4 +113,5 @@ def update_amenity(id):
     if data.get('name'):
         setattr(amenity, 'name', data['name'])
         amenity.save()
-    return json.dumps(amenity.to_dict(), indent=2) + '\n', 200
+    res = json.dumps(amenity.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json")

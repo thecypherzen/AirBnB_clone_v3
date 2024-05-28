@@ -2,7 +2,7 @@
 """A view for State objects that handles all default RESTFul API actions"""
 
 from api.v1.views import app_views
-from flask import abort, json, request
+from flask import abort, json, request, Response
 import models
 from models import storage
 
@@ -16,7 +16,8 @@ def get_all_states():
     response = []
     for state in states.values():
         response.append(state.to_dict())
-    return json.dumps(response, indent=2) + '\n'
+    res = json.dumps(response, indent=2) + '\n'
+    return Response(res, mimetype="application/json")
 
 
 @app_views.route('/states/<string:id>', strict_slashes=False)
@@ -24,10 +25,10 @@ def get_single_state(id):
     """Retrieves a single State object: GET /api/v1/states/<state_id>"""
 
     state = storage.get(State, id)
-    try:
-        return json.dumps(state.to_dict(), indent=2) + '\n'
-    except Exception:
+    if not state:
         abort(404)
+    res = json.dumps(state.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json")
 
 
 @app_views.route('/states/<string:id>', methods=['DELETE'],
@@ -43,7 +44,8 @@ def delete_single_state(id):
         state.delete()
         storage.save()
         storage.reload()
-        return json.dumps({}) + '\n', 200
+        res = json.dumps({}) + '\n'
+        return Response(res, mimetype="application/json")
     abort(404)
 
 
@@ -61,13 +63,16 @@ def create_state():
     """
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            abort(400, description="Not a JSON")
     except Exception:
         abort(400, description="Not a JSON")
-    if not data or not data.get('name', None):
+    if not data or not data.get("name"):
         abort(400, description="Missing name")
-    new_state = State(name=data.get('name'))
+    new_state = State(name=data.get("name"))
     new_state.save()
-    return json.dumps(new_state.to_dict(), indent=2) + '\n', 201
+    res json.dumps(new_state.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json", status=201)
 
 
 @app_views.route('/states/<string:id>', methods=['PUT'], strict_slashes=False)
@@ -85,6 +90,8 @@ def update_state(id):
     """
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            abort(400, description="Not a JSON")
     except Exception:
         abort(400, description="Not a JSON")
     state = storage.get(State, id)
@@ -94,4 +101,5 @@ def update_state(id):
     if name:
         setattr(state, 'name', name)
         state.save()
-    return json.dumps(state.to_dict(), indent=2) + '\n', 200
+    res = json.dumps(state.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json")

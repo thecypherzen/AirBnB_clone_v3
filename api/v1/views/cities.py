@@ -2,7 +2,7 @@
 """A view for Cities objects that handles all default RESTFul API actions"""
 
 from api.v1.views import app_views
-from flask import abort, json, request
+from flask import abort, json, request, Response
 import models
 from models import storage
 
@@ -23,7 +23,8 @@ def get_state_cities(state_id):
     cities = []
     for city in state.cities:
         cities.append(city.to_dict())
-    return json.dumps(cities, indent=2) + '\n'
+    res = json.dumps(cities, indent=2) + '\n'
+    return Response(res, mimetype="application/json")
 
 
 @app_views.route('/cities/<string:id>', strict_slashes=False)
@@ -36,7 +37,8 @@ def get_single_city(id):
     city = storage.get(City, id)
     if not city:
         abort(404)
-    return json.dumps(city.to_dict(), indent=2) + '\n'
+    res = json.dumps(city.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json")
 
 
 @app_views.route('/cities/<string:id>', methods=['DELETE'],
@@ -52,7 +54,8 @@ def delete_single_city(id):
         city.delete()
         storage.save()
         storage.reload()
-        return json.dumps({}) + '\n', 200
+        res = json.dumps({}) + '\n'
+        return Response(res, mimetype="application/json")
     abort(404)
 
 
@@ -72,6 +75,8 @@ def create_city(state_id):
     """
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            abort(400, description="Not a JSON")
     except Exception:
         abort(400, description="Not a JSON")
     if not data:
@@ -86,7 +91,8 @@ def create_city(state_id):
     new_city = City(name=data.get('name'),
                     state_id=state_id)
     new_city.save()
-    return json.dumps(new_city.to_dict(), indent=2) + '\n', 201
+    res = json.dumps(new_city.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json", status=201)
 
 
 @app_views.route('/cities/<string:id>', methods=['PUT'], strict_slashes=False)
@@ -104,6 +110,8 @@ def update_city(id):
     """
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            abort(400, description="Not a JSON")
     except Exception:
         abort(400, description="Not a JSON")
     city = storage.get(City, id)
@@ -114,4 +122,5 @@ def update_city(id):
     if data.get('state_id'):
         setattr(city, 'state_id', data['state_id'])
     city.save()
-    return json.dumps(city.to_dict(), indent=2) + '\n', 200
+    res = json.dumps(city.to_dict(), indent=2) + '\n'
+    return Response(res, mimetype="application/json")
