@@ -2,7 +2,7 @@
 """Creates and manages our app"""
 
 from api.v1.views import app_views
-from flask import Flask, g
+from flask import Flask, g, json
 from models import storage
 from os import getenv
 
@@ -14,6 +14,12 @@ app.register_blueprint(app_views)
 def teardown_storage(exception):
     """Tears down the storage"""
     storage.close()
+
+
+@app.errorhandler(404)
+def not_found(e):
+    """Handles 404 errors in app to return JSON"""
+    return json.dumps({"error": "Not found"}, indent=2) + '\n', 404
 
 
 if __name__ == "__main__":
