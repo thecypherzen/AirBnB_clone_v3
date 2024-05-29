@@ -71,7 +71,7 @@ def create_state():
         abort(400, description="Missing name")
     new_state = State(name=data.get("name"))
     new_state.save()
-    res json.dumps(new_state.to_dict(), indent=2) + '\n'
+    res = json.dumps(new_state.to_dict(), indent=2) + '\n'
     return Response(res, mimetype="application/json", status=201)
 
 

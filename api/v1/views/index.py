@@ -17,7 +17,7 @@ def get_status():
 @app_views.route('/stats', strict_slashes=False)
 def get_models_stats():
     """retrieves the number of each objects by type"""
-    res = {
+    temp = {
           'amenities': storage.count(models.amenity.Amenity),
           'cities': storage.count(models.city.City),
           'places': storage.count(models.place.Place),
@@ -25,5 +25,5 @@ def get_models_stats():
           'states': storage.count(models.state.State),
           'users': storage.count(models.user.User)
           }
-    res = json.dumps(res, indent=2) + '\n'
+    res = json.dumps(temp, indent=2) + '\n'
     return Response(res, mimetype="application/json")
