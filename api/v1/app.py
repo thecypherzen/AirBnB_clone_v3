@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Creates and manages our app"""
+"""Creates and manages our app for version 1 api"""
 
 from api.v1.views import app_views
 from flask import Flask, g, json, Response
