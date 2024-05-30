@@ -11,6 +11,7 @@ from models import storage
 
 Place = models.place.Place
 City = models.city.City
+User = models.user.User
 
 
 @app_views.route('/cities/<city_id>/places', strict_slashes=False)
@@ -93,6 +94,10 @@ def create_place(city_id):
         abort(400, description="Missing user_id")
     if not data.get("name"):
         abort(400, description="Missing name")
+
+    # check if user_id is valid
+    if not storage.get(User, data.get('user_id')):
+        abort(404)
 
     # check if a valid city
     city = storage.get(City, city_id)
