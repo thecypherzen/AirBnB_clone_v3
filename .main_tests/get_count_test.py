@@ -8,6 +8,8 @@ from models.state import State
 from models.city import City
 from models.place import Place
 from models.review import Review
+from os import getenv
+
 
 ''' Users
 storage.new(User(first_name="John", last_name="Kaase",
