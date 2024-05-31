@@ -5,10 +5,12 @@ from api.v1.views import app_views
 from flask import Flask, g, json, Response
 from models import storage
 from os import getenv
+from flask_cors import CORS
+
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
-
+CORS(app)
 
 @app.teardown_appcontext
 def teardown_storage(exception):
