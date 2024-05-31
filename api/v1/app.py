@@ -15,7 +15,7 @@ cors_config = {
     "origins": ["0.0.0.0"]
 }
 
-CORS(app, resources={f"/*": cors_config})
+CORS(app, resources={r"/*": cors_config})
 
 
 @app.teardown_appcontext
