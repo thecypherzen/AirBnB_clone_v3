@@ -10,7 +10,13 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 app.register_blueprint(app_views)
-CORS(app)
+
+cors_config = {
+    "origins": ["0.0.0.0"]
+}
+
+CORS(app, resources={f"/*": cors_config})
+
 
 @app.teardown_appcontext
 def teardown_storage(exception):
