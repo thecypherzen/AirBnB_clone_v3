@@ -112,6 +112,8 @@ def update_user(id):
     """
     try:
         data = request.get_json()
+        if not isinstance(data, dict):
+            abort(400, description="Not a JSON")
     except Exception:
         abort(400, description="Not a JSON")
     user = storage.get(User, id)
