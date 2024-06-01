@@ -18,7 +18,7 @@ from os import getenv
 
 Amenity = models.amenity.Amenity
 Place = models.place.Place
-db_mode = getenv("HBNB_TYPE_STORAGE")
+db_mode = models.storage_t
 
 
 @app_views.route('/places/<place_id>/amenities', strict_slashes=False)
