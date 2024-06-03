@@ -136,7 +136,7 @@ def update_review(rev_id):
     try:
         data = request.get_json()
         if not isinstance(data, dict):
-            abort(400, description="Noat a JSON")
+            abort(400, description="Not a JSON")
     except Exception:
         abort(400, description="Not a JSON")
     if not any([data, len(data), data.get("text")]):
