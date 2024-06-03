@@ -87,11 +87,9 @@ def create_review(place_id):
             abort(400, description="Not a JSON")
     except Exception:
         abort(400, description="Not a JSON")
-    if not data or not len(data):
-        abort(400, description="Missing data")
 
     # check if data has compulsory attributes
-    if not data.get("user_id"):
+    if not any([data, len(data), data.get("user_id")]):
         abort(400, description="Missing user_id")
     if not data.get("text"):
         abort(400, description="Missing text")
@@ -141,8 +139,8 @@ def update_review(rev_id):
             abort(400, description="Noat a JSON")
     except Exception:
         abort(400, description="Not a JSON")
-    if not data or not len(data):
-        abort(400, description="Missing data")
+    if not any([data, len(data), data.get("text")]):
+        abort(400, description="Missing text")
 
     # get place and assign attributes
     review = storage.get(Review, rev_id)
