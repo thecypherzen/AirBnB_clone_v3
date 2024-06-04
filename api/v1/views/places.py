@@ -12,7 +12,8 @@ from models import storage
 Place = models.place.Place
 City = models.city.City
 User = models.user.User
-
+State = models.state.State
+Amenity = models.amenity.Amenity
 
 @app_views.route('/cities/<city_id>/places', strict_slashes=False)
 def get_all_places(city_id):
@@ -135,7 +136,7 @@ def update_place(id):
     try:
         data = request.get_json()
         if not isinstance(data, dict):
-            abort(400, description="Noat a JSON")
+            abort(400, description="Not a JSON")
     except Exception:
         abort(400, description="Not a JSON")
     if not data or not len(data):
@@ -166,12 +167,12 @@ def update_place(id):
     res = json.dumps(place.to_dict(), indent=2) + '\n'
     return Response(res, mimetype="application/json")
 
-@app_views.route('', methods=['POST'], strict_slashes=False)
+@app_views.route('/places_search', methods=['POST'], strict_slashes=False)
 def search_places():
     """Allows a search for Place object: POST /api/v1/places_search
 
-    - Retrieves all Place objects depending of the JSON in the body of the request.
-      The JSON can contain 3 optional keys:
+    - Retrieves all Place objects depending of the JSON in the body of the
+      request.The JSON can contain 3 optional keys:
 
       states: list of State ids
       cities: list of City ids
@@ -182,13 +183,61 @@ def search_places():
         +error with the message 'Not a JSON'
       - If the JSON body is empty or each list of all keys are empty: retrieve
         +all Place objects
-      - If states list is not empty, results should include all Place objects for
-        +each State id listed
-      - If cities list is not empty, results should include all Place objects for
-        +each City id listed
+      - If states list is not empty, results should include all Place objects
+        +for each State id listed
+      - If cities list is not empty, results should include all Place objects
+        +for each City id listed
       - Keys states and cities are inclusive. Search results should include all
         +Place objects in storage related to each City in every State listed in
         +states, plus every City listed individually in cities, unless that City
         +was already included by states.
     """
-    pass
+    # check response body is valid json
+    try:
+        data = request.get_json()
+        if not isinstance(data, dict):
+            abort(400, description="Not a JSON")
+    except Exception:
+        abort(400, description="Not a JSON")
+
+    states = data.get("states")
+    cities = data.get("cities")
+    amenities = data.get("amenities")
+
+    if not any([data, all([states, cities, amenities])]):
+        results = list(storage.all(Place).values())
+    else:
+        results = set()
+        if states:
+            for state_id in states:
+                state = storage.get(State, state_id)
+                if state:
+                    for city in state.cities:
+                        results.update({place for place in city.places})
+        for i in results:
+            print("\n",i.to_dict())
+        if cities:
+            for city_id in cities:
+                city = storage.get(City, city_id)
+                if city:
+                    results.update({place for place in city.places})
+        for i in results:
+            print("\n",i.to_dict())
+        if amenities:
+            amenities = [storage.get(Amenity, a_id) for a_id in amenities]
+            amenities = list(filter(lambda x: x, amenities))
+            amenity_ids = [amenity.id for amenity in amenities]
+            temp_res = results.copy()
+            for place in temp_res:
+                if not place.amenities:
+                    results.discard(place)
+                else:
+                    for amenity in place.amenities:
+                        if amenity.id not in amenity_ids:
+                            results.discard(place)
+        results = [place.to_dict() for place in results]
+        for place in results:
+            if place.get("amenities"):
+                del(place["amenities"])
+    res = json.dumps(results, indent=2) + '\n'
+    return Response(res, mimetype="application/json")
