@@ -15,6 +15,7 @@ User = models.user.User
 State = models.state.State
 Amenity = models.amenity.Amenity
 
+
 @app_views.route('/cities/<city_id>/places', strict_slashes=False)
 def get_all_places(city_id):
     """Retrieves a list of all Place objects of a City:
@@ -167,6 +168,7 @@ def update_place(id):
     res = json.dumps(place.to_dict(), indent=2) + '\n'
     return Response(res, mimetype="application/json")
 
+
 @app_views.route('/places_search', methods=['POST'], strict_slashes=False)
 def search_places():
     """Allows a search for Place object: POST /api/v1/places_search
@@ -187,10 +189,10 @@ def search_places():
         +for each State id listed
       - If cities list is not empty, results should include all Place objects
         +for each City id listed
-      - Keys states and cities are inclusive. Search results should include all
-        +Place objects in storage related to each City in every State listed in
-        +states, plus every City listed individually in cities, unless that City
-        +was already included by states.
+      - Keys states and cities are inclusive. Search results should include
+        +all Place objects in storage related to each City in every State
+        +listed in states, plus every City listed individually in cities,
+        +unless that City was already included by states.
     """
     # check response body is valid json
     try:
@@ -204,8 +206,9 @@ def search_places():
     cities = data.get("cities")
     amenities = data.get("amenities")
 
-    if not any([data, all([states, cities, amenities])]):
-        results = list(storage.all(Place).values())
+    # print("about to enter")
+    if not all([data, states, cities, amenities]):
+        results = set(storage.all(Place).values())
     else:
         results = set()
         if states:
@@ -214,30 +217,40 @@ def search_places():
                 if state:
                     for city in state.cities:
                         results.update({place for place in city.places})
-        for i in results:
-            print("\n",i.to_dict())
+        # for i in results:
+            # print("\n",i.to_dict())
         if cities:
             for city_id in cities:
                 city = storage.get(City, city_id)
                 if city:
                     results.update({place for place in city.places})
-        for i in results:
-            print("\n",i.to_dict())
-        if amenities:
-            amenities = [storage.get(Amenity, a_id) for a_id in amenities]
-            amenities = list(filter(lambda x: x, amenities))
-            amenity_ids = [amenity.id for amenity in amenities]
-            temp_res = results.copy()
-            for place in temp_res:
+        # for i in results:
+        #    print("\n",i.to_dict())
+
+    # filter results based on amenities
+    # print([place.to_dict() for place in results])
+    if amenities:
+        # print("checking Amenities")
+        amenities = [storage.get(Amenity, a_id) for a_id in amenities]
+        amenities = list(filter(lambda x: x, amenities))
+        amenity_ids = [amenity.id for amenity in amenities]
+        if amenity_ids:
+            # print("amenity ids: ", amenity_ids)
+            temp_places = results.copy()
+            for place in temp_places:
                 if not place.amenities:
+                    # print("\nplace ", place.name, "has no amenities")
                     results.discard(place)
                 else:
-                    for amenity in place.amenities:
-                        if amenity.id not in amenity_ids:
+                    p_amenity_ids = [amen.id for amen in place.amenities]
+                    # print("\nplace: ", place.name, "has: ", p_amenity_ids)
+                    for amenity_id in amenity_ids:
+                        if amenity_id not in p_amenity_ids:
+                            # print(f"discarding place: {place.name}")
                             results.discard(place)
-        results = [place.to_dict() for place in results]
-        for place in results:
-            if place.get("amenities"):
-                del(place["amenities"])
+    results = [place.to_dict() for place in results]
+    for place in results:
+        if place.get("amenities"):
+            del place["amenities"]
     res = json.dumps(results, indent=2) + '\n'
     return Response(res, mimetype="application/json")
