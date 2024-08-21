@@ -84,7 +84,8 @@ Usage: update <class_name> <_id>
 'updated_at': datetime.datetime(2020, 2, 18, 14, 33, 45, 729907), 'first_name': 'person'}
 (hbnb)
 ```
-<hr/><br/>
+
+
 
 ### Alternative Commands Syntax ####
 ###### Example 0: Show all User objects
@@ -120,7 +121,8 @@ Usage: <class_name>.update(<_id>, <dictionary>)
 ```
 
 <hr/><br/>
-## Folder Details ###
+
+## Folder Details ##
 - **Date Created:** Mar 4 2024.
 - **Authors:**
 	- [William Inyam](https.//github.com/thecypherzen)
@@ -174,7 +176,7 @@ AirBnB_clone<br/>
 ## Technologies ##
 - All files written using using python3 (version 3.8.5)
 - File types can be identified by their extensions
-- Code tested on Ubuntu 20.04 LTS.<br/>
+- Code tested on Ubuntu 20.04 LTS.<br/><br/>
 
 
 ## Files ##
