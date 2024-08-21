@@ -45,8 +45,8 @@ There are a variety of commands available within the console program.
 
 <hr /><br/>
 
-### Examples
-#### Main Commands Syntax
+## Examples
+### Main Commands Syntax
 
 ###### Example 0: Create an object
 Usage: create <class_name>
@@ -86,7 +86,7 @@ Usage: update <class_name> <_id>
 ```
 <hr/><br/>
 
-#### Alternative Commands Syntax ####
+### Alternative Commands Syntax ####
 ###### Example 0: Show all User objects
 Usage: <class_name>.all()
 ```
@@ -119,8 +119,8 @@ Usage: <class_name>.update(<_id>, <dictionary>)
 (hbnb) ["[User] (98bea5de-9cb0-4d78-8a9d-c4de03521c30) {'updated_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134362), 'name': 'Fred the Frog', 'age': 9, 'id': '98bea5de-9cb0-4d78-8a9d-c4de03521c30', 'created_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134343)}"]
 ```
 
-
-<br/>## Folder Details ###
+<hr/><br/>
+## Folder Details ###
 - **Date Created:** Mar 4 2024.
 - **Authors:**
 	- [William Inyam](https.//github.com/thecypherzen)
@@ -177,7 +177,7 @@ AirBnB_clone<br/>
 - Code tested on Ubuntu 20.04 LTS.<br/>
 
 
-## Files###
+## Files ##
 - *Here is a detailed list of all files in the repo and their description*.
 
 | SN | File            | Description                                        |
