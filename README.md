@@ -11,9 +11,9 @@ The **AirBnB clone - The console** is the starting point of building the first f
   - retrieve an object  or all objects from our storage (file or database)
   - do operations on objects like count, compute, etc
   - update attributes of an object
-  - destroy an object
+  - destroy an object<br/>
 
-<br/>
+
 ## The Console Explained ##
 ### How to Use ###
 1. Clone repository to your local machine
@@ -43,8 +43,8 @@ There are a variety of commands available within the console program.
 | `update` | Updates existing attributes of an object based on its <class> and <uuid> | `update <class> <attr> <value>`<br/><ul><li>where `value` contains a space, it should be wrapped in quotes: `\' or \"` </li><li>prints nothing on success</li><li>prints error message if error occurs</li><li>can also be called on the <class> itself</li></ul> | `update User 61327bb5-1e2b-4b4e-9c47-ba6f0222bdb8 name Nameless`</br/>`User.update(61327bb5-1e2b-4b4e-9c47-ba6f0222bdb8, name Nameless)` |
 | `quit` | Exits the program<ul><li>`EOF` does the same</li></ul> | `quit` | `quit` |
 
-<hr />
-<br/>
+<hr /><br/>
+
 ### Examples
 #### Main Commands Syntax
 
@@ -84,7 +84,7 @@ Usage: update <class_name> <_id>
 'updated_at': datetime.datetime(2020, 2, 18, 14, 33, 45, 729907), 'first_name': 'person'}
 (hbnb)
 ```
-<hr/>
+<hr/><br/>
 
 #### Alternative Commands Syntax ####
 ###### Example 0: Show all User objects
@@ -118,9 +118,9 @@ Usage: <class_name>.update(<_id>, <dictionary>)
 (hbnb) User.all()
 (hbnb) ["[User] (98bea5de-9cb0-4d78-8a9d-c4de03521c30) {'updated_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134362), 'name': 'Fred the Frog', 'age': 9, 'id': '98bea5de-9cb0-4d78-8a9d-c4de03521c30', 'created_at': datetime.datetime(2020, 2, 19, 21, 47, 29, 134343)}"]
 ```
-<br/>
 
-## Folder Details ###
+
+<br/>## Folder Details ###
 - **Date Created:** Mar 4 2024.
 - **Authors:**
 	- [William Inyam](https.//github.com/thecypherzen)
@@ -129,10 +129,9 @@ Usage: <class_name>.update(<_id>, <dictionary>)
   - **Released:** Mar. 4, 2024 - 6am.
   - **1st Deadline:** Mar 11, 2024 - 6am.
   - **Duration:** 7 days.
-  - **Month** 5, **Week** 3.
+  - **Month** 5, **Week** 3.<br/>
 
 
-<br/>
 
 ## File Tree ##
 AirBnB_clone<br/>
@@ -169,16 +168,14 @@ AirBnB_clone<br/>
 │       ├── test_review.py<br/>
 │       ├── test_state.py<br/>
 │       └── test_user.py<br/>
-└── web_static<br/>
+└── web_static<br/><br/>
 
-<br/>
 
 ## Technologies ##
 - All files written using using python3 (version 3.8.5)
 - File types can be identified by their extensions
-- Code tested on Ubuntu 20.04 LTS.
+- Code tested on Ubuntu 20.04 LTS.<br/>
 
-<br/>
 
 ## Files###
 - *Here is a detailed list of all files in the repo and their description*.
